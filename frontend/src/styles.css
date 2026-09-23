@@ -21,3 +21,26 @@ button, .button { display: inline-block; border: 1px solid transparent; border-r
 .student-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(160px,1fr)); gap: 20px; }.student { background: #fff; border: 1px solid #dce3d9; border-radius: 12px; padding: 16px; text-align: center; }.student img { width: 100%; max-width: 150px; aspect-ratio: 75 / 104; object-fit: contain; border-radius: 6px; background: #f4f6f2; }.student h3 { font-size: .87rem; line-height: 1.4; font-weight: 600; margin: 12px 0 4px; overflow-wrap: anywhere; }
 .back { font-size: .9rem; text-decoration: none; }.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }footer { text-align: center; font-size: .78rem; color: #6b786f; padding: 24px; }
 @media(max-width: 650px) { header { padding: 16px; gap: 12px; }nav a { padding: 9px; font-size: .8rem; } main { padding: 32px 16px; }.panel { padding: 20px; }.form-grid { grid-template-columns: 1fr; }.filters { flex-wrap: wrap; }.filters label { flex: 1 1 100% !important; }.student-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }.student { padding: 12px; }.section-heading h2 { font-size: 1.6rem; } }
+
+.course-heading-actions { display: flex; align-items: center; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
+.dialog-backdrop { position: fixed; inset: 0; z-index: 20; display: flex; align-items: center; justify-content: center; padding: 18px; background: rgb(19 42 31 / 72%); }
+.participation-dialog { width: min(100%, 620px); max-height: calc(100vh - 36px); overflow-y: auto; padding: 28px 36px 30px; border: 1px solid #dce3d9; border-radius: 18px; background: #fff; box-shadow: 0 24px 70px rgb(8 29 16 / 32%); text-align: center; }
+.participation-dialog:focus { outline: none; }
+.participation-dialog h2 { font-size: 2rem; margin: 0; }
+.dialog-intro { color: #647269; margin: 2px 0 18px; }
+.participation-content { display: flex; flex-direction: column; align-items: center; }
+.participation-photo { display: block; width: min(210px, 45vw); height: min(265px, 35vh); min-height: 160px; object-fit: contain; border-radius: 10px; background: #f4f6f2; border: 1px solid #e1e7dd; }
+.participation-content h3 { font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.25; margin: 16px 0 10px; overflow-wrap: anywhere; }
+.rating-label { font-weight: 650; margin: 4px 0 2px; }
+.star-rating { display: flex; justify-content: center; gap: 3px; }
+.star-rating .star { border: 0; background: transparent; color: #b9c3b5; font-size: clamp(2.2rem, 7vw, 3.4rem); line-height: 1; padding: 3px; }
+.star-rating .star:hover, .star-rating .star.selected { color: #b78837; background: transparent; }
+.star-rating .star:disabled { opacity: .7; }
+.score-value { font-size: 1.15rem; font-weight: 750; margin: 2px 0 10px; }
+.passes-remaining { background: #eaf0e6; border-radius: 20px; padding: 6px 16px; margin: 0 0 16px; font-size: .9rem; }
+.dialog-actions { width: 100%; display: grid; gap: 10px; }
+.dialog-action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.submit-next { width: 100%; }
+.dialog-finish { display: block; margin: 14px auto 0; background: transparent; border: 0; color: #285b40; text-decoration: underline; }
+.dialog-finish:hover { background: #edf2e9; }
+@media(max-width: 650px) { .course-heading-actions { justify-content: flex-start; }.section-heading { align-items: flex-start; flex-direction: column; }.participation-dialog { padding: 20px 16px; }.dialog-action-row { grid-template-columns: 1fr; }.participation-photo { height: min(240px, 30vh); } }

@@ -14,3 +14,21 @@ CREATE TABLE IF NOT EXISTS roster_students (
   photo BYTEA NOT NULL,
   UNIQUE (course_id, position)
 );
+
+CREATE TABLE IF NOT EXISTS participation_events (
+  id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  student_id INTEGER NOT NULL REFERENCES roster_students(id) ON DELETE CASCADE,
+  event_type VARCHAR(5) NOT NULL CHECK (event_type IN ('score', 'pass')),
+  score SMALLINT,
+  participation_date DATE NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  CONSTRAINT participation_event_score CHECK (
+    (event_type = 'score' AND score IS NOT NULL AND score BETWEEN 0 AND 5)
+    OR (event_type = 'pass' AND score IS NULL)
+  )
+);
+
+CREATE INDEX IF NOT EXISTS participation_events_student_type_idx
+  ON participation_events (student_id, event_type);
+CREATE INDEX IF NOT EXISTS participation_events_date_idx
+  ON participation_events (participation_date, id) WHERE event_type = 'score';

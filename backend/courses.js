@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import multer from 'multer';
 import { pool } from './db.js';
+import { participation } from './participation.js';
 import { parseRoster, RosterError } from './roster-parser.js';
 
 export const courses = Router();
@@ -8,6 +9,8 @@ const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 20 
 const quarters = ['Fall', 'Winter', 'Spring', 'Summer'];
 const validId = (value) => /^\d+$/.test(value) && Number(value) > 0 && Number(value) <= 2147483647;
 let importing = false;
+
+courses.use('/:id/participation', participation);
 
 courses.get('/', async (req, res) => {
   const course = String(req.query.course || '').trim().toUpperCase();

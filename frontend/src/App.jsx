@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import ParticipationDialog from './components/ParticipationDialog.jsx';
 
 async function request(url, options) {
   const response = await fetch(url, options);
@@ -7,7 +8,30 @@ async function request(url, options) {
   return data;
 }
 
-function Roster({ id }) {
+function Roster({ id, participationEnabled = false }) {
+  const [asking, setAsking] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const [actionError, setActionError] = useState('');
+  async function exportCsv() {
+    if (exporting) return;
+    setExporting(true); setActionError('');
+    try {
+      const response = await fetch(`/api/courses/${id}/participation/export`);
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Unable to export participation.');
+      }
+      const blob = await response.blob();
+      const disposition = response.headers.get('Content-Disposition') || '';
+      const filename = disposition.match(/filename="([^"]+)"/)?.[1] || 'participation.csv';
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url; link.download = filename;
+      document.body.append(link); link.click(); link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch (error) { setActionError(error.message); }
+    finally { setExporting(false); }
+  }
   const [course, setCourse] = useState(null);
   const [error, setError] = useState('');
   useEffect(() => {
@@ -21,7 +45,9 @@ function Roster({ id }) {
   if (error) return <p role="alert" className="error">{error}</p>;
   if (!course) return <p role="status">Loading roster…</p>;
   return <section className="roster" aria-labelledby="roster-title">
-    <div className="section-heading"><div><p className="eyebrow">{course.quarter} {course.year}</p><h2 id="roster-title">{course.course_number}</h2></div><span className="badge">{course.students.length} students</span></div>
+    <div className="section-heading"><div><p className="eyebrow">{course.quarter} {course.year}</p><h2 id="roster-title">{course.course_number}</h2></div><div className="course-heading-actions">{participationEnabled && <><button type="button" onClick={() => { setActionError(''); setAsking(true); }}>Ask</button><button type="button" className="secondary" disabled={exporting} onClick={exportCsv}>{exporting ? 'Exporting…' : 'Export'}</button></>}<span className="badge">{course.students.length} students</span></div></div>
+    {actionError && <p role="alert" className="error">{actionError}</p>}
+    {asking && <ParticipationDialog courseId={id} onClose={() => setAsking(false)} />}
     <div className="student-grid">{course.students.map((student) => <article className="student" key={student.id}>
       <img src={student.photoUrl} alt={`Portrait of ${student.name}`} loading="lazy" />
       <h3>{student.name}</h3>
@@ -103,6 +129,6 @@ export default function App() {
     <a href="#/courses" aria-current={route.startsWith('#/courses') ? 'page' : undefined}>Courses</a>
     <a href="#/upload" aria-current={route === '#/upload' ? 'page' : undefined}>Upload roster</a>
   </nav></header><main>
-    {detail ? <><a className="back" href="#/courses">← All courses</a><Roster id={detail[1]} /></> : route === '#/courses' ? <CoursesPage /> : <UploadPage />}
+    {detail ? <><a className="back" href="#/courses">← All courses</a><Roster id={detail[1]} participationEnabled /></> : route === '#/courses' ? <CoursesPage /> : <UploadPage />}
   </main><footer>Participation Tracking · Local classroom workspace</footer></>;
 }
