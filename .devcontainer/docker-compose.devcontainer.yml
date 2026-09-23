@@ -1,0 +1,13 @@
+# Keep the editor environment alive independently of the app processes.
+# See README.md for commands to start each app in its own container.
+# Relative host paths resolve from the root docker-compose.yml.
+services:
+  backend:
+    command: ["sh", "-c", "while sleep 1000; do :; done"]
+    volumes:
+      - .:/workspace
+      - backend_node_modules:/workspace/backend/node_modules
+      - frontend_node_modules:/workspace/frontend/node_modules
+
+  frontend:
+    command: ["sh", "-c", "while sleep 1000; do :; done"]

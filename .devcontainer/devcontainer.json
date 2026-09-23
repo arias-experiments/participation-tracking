@@ -1,0 +1,19 @@
+{
+  "name": "Participation Tracking",
+  "dockerComposeFile": [
+    "../docker-compose.yml",
+    "docker-compose.devcontainer.yml"
+  ],
+  "service": "backend",
+  "runServices": ["frontend", "backend", "database"],
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "stopCompose",
+  "overrideCommand": false,
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.cwd": "/workspace/backend"
+      }
+    }
+  }
+}
